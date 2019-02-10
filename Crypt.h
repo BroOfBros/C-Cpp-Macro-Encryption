@@ -1,9 +1,10 @@
+#ifndef CRYPT
+#define CRYPT
 #pragma once
 #pragma warning(disable:4996)
 
 #include <stdlib.h>
 #include <string.h>
-
 
 /*
 *Compile in "RELEASE" mode! This should work with optimization enabled.
@@ -11,15 +12,18 @@
 *By calling __DECRYPT64 more than one time on a string, you will actually encrypt it back.
 */
 
+#ifndef __SHIFT_KEY
 //How much to shift our letters.The default value is based on the time this gets compiled.
 #define __SHIFT_KEY (__TIME__[0] - '0' + __TIME__[1] - '0' + __TIME__[3] - '0' + __TIME__[4] - '0' + __TIME__[6] - '0' + __TIME__[7] - '0')
+#endif
 
+#ifndef __SHIFT64
 /*Shift letters by __SHIFT_KEY ammount, append \0 to our strings and write them as single characters.
 *EG: A normal string = "This is normal". As single characters our string will look like this = { 'T', 'h', 'i', 's', ... }
 *By writting our strings as an 'array of characters', as above, they won't show up in our .exe file.
 *However, after decrypting our strings, they will be visible in memory.
 */
-#define __ENCRYPT64(__String) \
+#define __SHIFT64(__String) \
 (__String)[0] + __SHIFT_KEY, (__String)[1] + __SHIFT_KEY, (__String)[2] + __SHIFT_KEY, (__String)[3] + __SHIFT_KEY,		\
 (__String)[4] + __SHIFT_KEY, (__String)[5] + __SHIFT_KEY, (__String)[6] + __SHIFT_KEY, (__String)[7] + __SHIFT_KEY,		\
 (__String)[8] + __SHIFT_KEY, (__String)[9] + __SHIFT_KEY, (__String)[10] + __SHIFT_KEY, (__String)[11] + __SHIFT_KEY,	\
@@ -36,9 +40,12 @@
 (__String)[52] + __SHIFT_KEY, (__String)[53] + __SHIFT_KEY, (__String)[54] + __SHIFT_KEY, (__String)[55] + __SHIFT_KEY,	\
 (__String)[56] + __SHIFT_KEY, (__String)[57] + __SHIFT_KEY, (__String)[58] + __SHIFT_KEY, (__String)[59] + __SHIFT_KEY,	\
 (__String)[60] + __SHIFT_KEY, (__String)[61] + __SHIFT_KEY, (__String)[62] + __SHIFT_KEY, (__String)[63] + __SHIFT_KEY,	'\0'
+#endif
 
+#ifndef __ENCRYPT64
 //Concatenate string terminators to our __String. We are doing this in order to accept strings with less than 64 characters.
-#define __SHIFT64(__String) { __ENCRYPT64(__String"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0") }
+#define __ENCRYPT64(__String) { __SHIFT64(__String"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0") }
+#endif
 
 /*Attempt to decrypt the string and return it as a pointer.
 *NOTE:It decrypts the original string and returns a pointer to the first element of the decrypted string.
@@ -64,3 +71,4 @@ char * __DECRYPT64(char *EncryptedString)
 
 	return EncryptedString;
 }
+#endif
