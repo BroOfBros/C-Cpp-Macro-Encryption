@@ -4,7 +4,7 @@ Using macros only in order to encrypt strings during compilation time.
 
 
 # Known bugs
-When using it in multiple sources, the __TIME__ will change (it indicates the time the current source file was compiled).
+When using it in multiple sources, the `__TIME__` will change (it indicates the time the current source file was compiled).
 I couldn't find a fix for this yet, the only way to 'fix' it is by simply using a static value..
 
 # Limitations
